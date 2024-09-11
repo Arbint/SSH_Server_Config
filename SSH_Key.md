@@ -1,6 +1,6 @@
-To Generate and Use SSH key
+# SSH key
 
-first generate the ssh-key pair
+## SSH Generation
 ```
 ssh-keygen -t -rsa -b 4096 -C "comment, typically your email to help identify"
 ```
@@ -15,9 +15,9 @@ after the change, make sure to alter it's permissions:
 icacls C:\Users\<YourUserName>\.ssh\authroized_keys /inheritance:r
 icacls C:\Users\<YourUserName>\.ssh\authroized_keys /grant <YourUserName>:F
 ```
-the first line removes all permissions the file inheritance from it's group, and the second line give the user full control of the file.
+The first line removes all permissions the file inheritance from it's group, and the second line give the user full control of the file.
 
-Also better to configure it to only allow private ssh keys: 
+Also better to configure it to only allow private ssh key logins on the server: 
 Open ```C:\ProgramData\ssh\sshd_config```
 add configure these 2 options:
 ```
@@ -34,3 +34,26 @@ Restart-Service sshd
 chmod 700 ~/.ssh
 chomd 600 ~/.ssh/authroized_keys
 ```
+
+## To use SSH key to log in
+first, start the ```ssh-agent```
+* windows
+```
+Start-Service ssh-agent
+Set-Service -Name ssh-agent -StartupType Automatic
+```
+
+* Linux:
+```
+eval $(ssh-agent -s)
+```
+
+add the ssh private key to the agent:
+```
+ssh-add /path/to/ssh_key
+```
+if permissions are too open, change it:
+```
+chmod 600 /path/to/ssh_key
+```
+you may need to type in the password
